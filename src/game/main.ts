@@ -54,12 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
       moneyElement.textContent = player.resources[ResourceType.MONEY].toString();
     }
     
-    // Update supplies display
-    const suppliesElement = document.getElementById('supplies');
-    if (suppliesElement) {
-      suppliesElement.textContent = player.resources[ResourceType.SUPPLIES].toString();
-    }
-    
     // Update unit costs based on player's unit count
     const unitCount = player.units.length;
     const soldierCostElement = document.getElementById('soldier-cost');
@@ -67,19 +61,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const helicopterCostElement = document.getElementById('helicopter-cost');
     
     if (soldierCostElement) {
-      const baseCost = 100;
+      const baseCost = 150;
       const scaledCost = Math.floor(baseCost * (1 + unitCount * 0.05));
       soldierCostElement.textContent = scaledCost.toString();
     }
     
     if (tankCostElement) {
-      const baseCost = 300;
+      const baseCost = 450;
       const scaledCost = Math.floor(baseCost * (1 + unitCount * 0.05));
       tankCostElement.textContent = scaledCost.toString();
     }
     
     if (helicopterCostElement) {
-      const baseCost = 500;
+      const baseCost = 700;
       const scaledCost = Math.floor(baseCost * (1 + unitCount * 0.05));
       helicopterCostElement.textContent = scaledCost.toString();
     }
