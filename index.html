@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Generals - Command & Conquer .io</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="hud">
+            <div class="resources">
+                <div class="resource">
+                    <img src="/assets/images/money.svg" alt="Money">
+                    <span id="money">100</span>
+                </div>
+                <div class="resource">
+                    <img src="/assets/images/supplies.svg" alt="Supplies">
+                    <span id="supplies">100</span>
+                </div>
+            </div>
+            <div class="unit-buttons">
+                <button id="soldier-btn" class="unit-btn">
+                    <img src="/assets/images/soldier.svg" alt="Soldier">
+                    <span class="cost" id="soldier-cost">25</span>
+                </button>
+                <button id="tank-btn" class="unit-btn">
+                    <img src="/assets/images/tank.svg" alt="Tank">
+                    <span class="cost" id="tank-cost">75</span>
+                </button>
+                <button id="helicopter-btn" class="unit-btn">
+                    <img src="/assets/images/helicopter.svg" alt="Helicopter">
+                    <span class="cost" id="helicopter-cost">125</span>
+                </button>
+            </div>
+        </div>
+        <canvas id="gameCanvas"></canvas>
+    </div>
+    <script type="module" src="src/game/main.ts"></script>
+</body>
+</html> 
