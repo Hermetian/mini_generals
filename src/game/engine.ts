@@ -372,7 +372,7 @@ export class GameEngine {
   // Check if a unit should automatically acquire a target
   private checkForAutoTarget(unit: Unit): void {
     // Only look for targets if not already attacking or moving
-    if (unit.isAttacking || (unit.isMoving && !unit.isAttacking)) {
+    if (unit.isAttacking || unit.isMoving) {
       return;
     }
     
