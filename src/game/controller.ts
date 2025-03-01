@@ -138,7 +138,7 @@ export class GameController {
           this.selectUnitsInBox(this.selectionStart, { x, y });
         } else {
           // Single click
-          this.handleSingleClick({ x, y }, event.shiftKey);
+          this.handleSingleClick({ x, y }, event.shiftKey, event.ctrlKey);
         }
       }
       
@@ -229,8 +229,14 @@ export class GameController {
   }
 
   // Handle a single click (select a unit or target)
-  private handleSingleClick(position: Position, addToSelection: boolean): void {
+  private handleSingleClick(position: Position, addToSelection: boolean, ctrlKey: boolean = false): void {
     const state = this.engine.getState();
+    
+    // If Ctrl key is pressed, force movement command for selected units
+    if (ctrlKey && this.selectedUnits.length > 0) {
+      this.moveSelectedUnitsTo(position);
+      return;
+    }
     
     // Check if clicked on a unit
     let clickedUnit: Unit | null = null;

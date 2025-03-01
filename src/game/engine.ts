@@ -407,8 +407,8 @@ export class GameEngine {
     });
     
     // If found an enemy in range, attack it
-    if (nearestEnemy) {
-      this.attackUnit(unit.id, nearestEnemy.id);
+    if (nearestEnemy !== null) {
+      this.attackUnit(unit.id, (nearestEnemy as Unit).id);
     }
   }
   
