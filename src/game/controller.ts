@@ -156,7 +156,8 @@ export class GameController {
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
       
-      this.issueCommand({ x, y });
+      // Always move on right-click, never attack
+      this.moveSelectedUnitsTo({ x, y });
     });
     
     // Keyboard shortcuts
@@ -366,7 +367,7 @@ export class GameController {
     const state = this.engine.getState();
     const activePlayers = Object.values(state.players).filter(player => 
       player.units.length > 0 || 
-      (player.resources[ResourceType.MONEY] >= 100 && player.resources[ResourceType.SUPPLIES] >= 50)
+      player.resources[ResourceType.MONEY] >= 150
     );
     
     if (activePlayers.length <= 1) {

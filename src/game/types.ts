@@ -12,7 +12,6 @@ export enum FactionType {
 
 export enum ResourceType {
   MONEY = 'MONEY',
-  SUPPLIES = 'SUPPLIES',
 }
 
 export interface Position {
@@ -26,7 +25,6 @@ export interface Player {
   faction: FactionType;
   resources: {
     [ResourceType.MONEY]: number;
-    [ResourceType.SUPPLIES]: number;
   };
   units: Unit[];
   basePosition: Position;
@@ -75,5 +73,4 @@ export interface GameState {
 
 export interface UnitCost {
   [ResourceType.MONEY]: number;
-  [ResourceType.SUPPLIES]: number;
 } 

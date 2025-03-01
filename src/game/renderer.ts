@@ -10,7 +10,6 @@ const UNIT_SIZE = {
 // Resource sprite dimensions
 const RESOURCE_SIZE = {
   [ResourceType.MONEY]: { width: 20, height: 20 },
-  [ResourceType.SUPPLIES]: { width: 20, height: 20 },
 };
 
 export class GameRenderer {
@@ -51,11 +50,10 @@ export class GameRenderer {
 
   // Load resource images
   private loadResourceImages(): void {
-    Object.values(ResourceType).forEach(resourceType => {
-      const img = new Image();
-      img.src = `/mini_generals/assets/images/${resourceType.toLowerCase()}.svg`;
-      this.resourceImages.set(resourceType, img);
-    });
+    // Only load MONEY image since SUPPLIES has been removed
+    const img = new Image();
+    img.src = `/mini_generals/assets/images/${ResourceType.MONEY.toLowerCase()}.svg`;
+    this.resourceImages.set(ResourceType.MONEY, img);
   }
 
   // Set debug mode
@@ -367,12 +365,6 @@ export class GameRenderer {
       // Show resources
       this.ctx.fillText(
         `  Money: ${player.resources[ResourceType.MONEY]}`,
-        20,
-        y
-      );
-      y += 15;
-      this.ctx.fillText(
-        `  Supplies: ${player.resources[ResourceType.SUPPLIES]}`,
         20,
         y
       );

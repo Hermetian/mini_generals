@@ -14,16 +14,13 @@ import {
 // Base costs for units
 const BASE_UNIT_COSTS: Record<UnitType, UnitCost> = {
   [UnitType.SOLDIER]: {
-    [ResourceType.MONEY]: 100,
-    [ResourceType.SUPPLIES]: 50,
+    [ResourceType.MONEY]: 150,
   },
   [UnitType.TANK]: {
-    [ResourceType.MONEY]: 300,
-    [ResourceType.SUPPLIES]: 150,
+    [ResourceType.MONEY]: 450,
   },
   [UnitType.HELICOPTER]: {
-    [ResourceType.MONEY]: 500,
-    [ResourceType.SUPPLIES]: 200,
+    [ResourceType.MONEY]: 700,
   },
 };
 
@@ -68,12 +65,10 @@ const UNIT_STATS: Record<UnitType, Omit<Unit, 'id' | 'position' | 'playerId' | '
 const RESOURCE_CONFIG = {
   respawnTime: 30, // seconds
   resourceAmount: {
-    [ResourceType.MONEY]: 100,
-    [ResourceType.SUPPLIES]: 75,
+    [ResourceType.MONEY]: 150,
   },
   mapResourceCount: {
-    [ResourceType.MONEY]: 10,
-    [ResourceType.SUPPLIES]: 8,
+    [ResourceType.MONEY]: 15,
   },
 };
 
@@ -100,8 +95,7 @@ export class GameEngine {
   // Initialize resource positions
   private generateResourceSpots(): void {
     const { width, height } = this.state.mapSize;
-    const totalSpots = RESOURCE_CONFIG.mapResourceCount[ResourceType.MONEY] + 
-                       RESOURCE_CONFIG.mapResourceCount[ResourceType.SUPPLIES];
+    const totalSpots = RESOURCE_CONFIG.mapResourceCount[ResourceType.MONEY];
     
     // Create resource positions around the map
     for (let i = 0; i < totalSpots; i++) {
@@ -120,7 +114,6 @@ export class GameEngine {
   // Create resources on the map
   private spawnResources(): void {
     const moneyCount = RESOURCE_CONFIG.mapResourceCount[ResourceType.MONEY];
-    const suppliesCount = RESOURCE_CONFIG.mapResourceCount[ResourceType.SUPPLIES];
     
     // Create money resources
     for (let i = 0; i < moneyCount; i++) {
@@ -129,19 +122,6 @@ export class GameEngine {
         type: ResourceType.MONEY,
         position: this.resourceSpots[i],
         amount: RESOURCE_CONFIG.resourceAmount[ResourceType.MONEY],
-        respawnTime: RESOURCE_CONFIG.respawnTime,
-        isCollected: false,
-      };
-      this.state.resources[resource.id] = resource;
-    }
-    
-    // Create supplies resources
-    for (let i = 0; i < suppliesCount; i++) {
-      const resource: Resource = {
-        id: uuidv4(),
-        type: ResourceType.SUPPLIES,
-        position: this.resourceSpots[i + moneyCount],
-        amount: RESOURCE_CONFIG.resourceAmount[ResourceType.SUPPLIES],
         respawnTime: RESOURCE_CONFIG.respawnTime,
         isCollected: false,
       };
@@ -181,8 +161,7 @@ export class GameEngine {
       name,
       faction,
       resources: {
-        [ResourceType.MONEY]: 500, // Starting money
-        [ResourceType.SUPPLIES]: 300, // Starting supplies
+        [ResourceType.MONEY]: 800, // Starting money (increased since it's the only resource now)
       },
       units: [],
       basePosition,
@@ -219,20 +198,17 @@ export class GameEngine {
     const scalingFactor = 1 + (player.units.length * 0.1); // 10% increase per unit
     const unitCost = {
       [ResourceType.MONEY]: Math.floor(BASE_UNIT_COSTS[unitType][ResourceType.MONEY] * scalingFactor),
-      [ResourceType.SUPPLIES]: Math.floor(BASE_UNIT_COSTS[unitType][ResourceType.SUPPLIES] * scalingFactor),
     };
     
     // Check if player has enough resources
     if (
-      player.resources[ResourceType.MONEY] < unitCost[ResourceType.MONEY] ||
-      player.resources[ResourceType.SUPPLIES] < unitCost[ResourceType.SUPPLIES]
+      player.resources[ResourceType.MONEY] < unitCost[ResourceType.MONEY]
     ) {
       return null; // Not enough resources
     }
     
     // Deduct resources
     player.resources[ResourceType.MONEY] -= unitCost[ResourceType.MONEY];
-    player.resources[ResourceType.SUPPLIES] -= unitCost[ResourceType.SUPPLIES];
     
     // Create unit
     const unitId = uuidv4();
@@ -486,10 +462,21 @@ export class GameEngine {
         
         if (nearbyUnit) {
           // Collect the resource
-          player.resources[resource.type] += resource.amount;
+          player.resources[ResourceType.MONEY] += resource.amount;
           resource.isCollected = true;
         }
       });
     });
+  }
+
+  // Check if the game should end
+  private checkGameOver(): void {
+    const state = this.getState();
+    const activePlayers = Object.values(state.players).filter(player => 
+      player.units.length > 0 || 
+      player.resources[ResourceType.MONEY] >= 150
+    );
+    
+    // ... existing code ...
   }
 } 
