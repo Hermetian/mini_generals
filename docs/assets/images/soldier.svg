@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="50" height="50">
+  <!-- Soldier silhouette -->
+  <g fill="#333" stroke="#000" stroke-width="1">
+    <!-- Head -->
+    <circle cx="25" cy="15" r="8"/>
+    <!-- Helmet -->
+    <path d="M18 12 Q25 5 32 12 Q32 18 25 20 Q18 18 18 12 Z" fill="#3a5311"/>
+    <!-- Body -->
+    <rect x="20" y="22" width="10" height="20" rx="2"/>
+    <!-- Arms -->
+    <rect x="10" y="25" width="12" height="6" rx="3" transform="rotate(20 10 25)"/>
+    <rect x="30" y="25" width="12" height="6" rx="3" transform="rotate(-20 40 25)"/>
+    <!-- Gun -->
+    <rect x="38" y="22" width="12" height="3" rx="1"/>
+    <!-- Legs -->
+    <rect x="20" y="42" width="4" height="8"/>
+    <rect x="26" y="42" width="4" height="8"/>
+  </g>
+</svg> 

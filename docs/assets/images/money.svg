@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="40" height="40">
+  <!-- Money Resource -->
+  <g>
+    <!-- Money bag -->
+    <circle cx="20" cy="22" r="15" fill="#e6c700" stroke="#a08e00" stroke-width="2"/>
+    
+    <!-- Money bag tie -->
+    <path d="M12 10 Q20 5 28 10 L25 15 Q20 12 15 15 Z" fill="#e6c700" stroke="#a08e00" stroke-width="1"/>
+    
+    <!-- Dollar sign -->
+    <path d="M20 12 L20 32 M16 15 L24 15 M16 29 L24 29" stroke="#a08e00" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M20 12 L20 32 M16 15 L24 15 M16 29 L24 29" stroke="#ffeb3b" stroke-width="2" stroke-linecap="round" fill="none"/>
+  </g>
+</svg> 
