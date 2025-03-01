@@ -95,8 +95,8 @@ export class GameController {
       this.isMouseDown = true;
       this.selectionStart = { x, y };
       
-      // If not holding shift, clear selection
-      if (!event.shiftKey) {
+      // If not holding Ctrl, clear selection
+      if (!event.ctrlKey) {
         this.selectedUnits = [];
       }
     });
@@ -137,7 +137,7 @@ export class GameController {
           // Selection box drag
           this.selectUnitsInBox(this.selectionStart, { x, y });
         } else {
-          // Single click
+          // Single click - Pass shift key for movement and ctrl key for adding to selection
           this.handleSingleClick({ x, y }, event.shiftKey, event.ctrlKey);
         }
       }
@@ -229,11 +229,11 @@ export class GameController {
   }
 
   // Handle a single click (select a unit or target)
-  private handleSingleClick(position: Position, addToSelection: boolean, ctrlKey: boolean = false): void {
+  private handleSingleClick(position: Position, shiftKey: boolean, ctrlKey: boolean = false): void {
     const state = this.engine.getState();
     
-    // If Ctrl key is pressed, force movement command for selected units
-    if (ctrlKey && this.selectedUnits.length > 0) {
+    // If Shift key is pressed, force movement command for selected units
+    if (shiftKey && this.selectedUnits.length > 0) {
       this.moveSelectedUnitsTo(position);
       return;
     }
@@ -260,7 +260,7 @@ export class GameController {
       const unit = clickedUnit as Unit;
       if (unit.playerId === this.playerId) {
         // Select own unit
-        if (addToSelection) {
+        if (ctrlKey) {
           // Add to selection if not already selected
           if (!this.selectedUnits.some(u => u.id === unit.id)) {
             this.selectedUnits.push(unit);
@@ -278,7 +278,7 @@ export class GameController {
     } else if (this.selectedUnits.length > 0) {
       // Clicked on empty space with units selected - MOVE command
       this.moveSelectedUnitsTo(position);
-    } else if (!addToSelection) {
+    } else if (!ctrlKey) {
       // Clicked on empty space, clear selection
       this.selectedUnits = [];
     }
