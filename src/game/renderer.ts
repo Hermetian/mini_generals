@@ -37,14 +37,14 @@ export class GameRenderer {
     
     // Load base image
     this.baseImage = new Image();
-    this.baseImage.src = '/assets/images/base.svg';
+    this.baseImage.src = '/mini_generals/assets/images/base.svg';
   }
 
   // Load unit images
   private loadUnitImages(): void {
     Object.values(UnitType).forEach(unitType => {
       const img = new Image();
-      img.src = `/assets/images/${unitType.toLowerCase()}.svg`;
+      img.src = `/mini_generals/assets/images/${unitType.toLowerCase()}.svg`;
       this.unitImages.set(unitType, img);
     });
   }
@@ -53,7 +53,7 @@ export class GameRenderer {
   private loadResourceImages(): void {
     Object.values(ResourceType).forEach(resourceType => {
       const img = new Image();
-      img.src = `/assets/images/${resourceType.toLowerCase()}.svg`;
+      img.src = `/mini_generals/assets/images/${resourceType.toLowerCase()}.svg`;
       this.resourceImages.set(resourceType, img);
     });
   }

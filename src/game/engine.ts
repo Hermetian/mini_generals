@@ -471,9 +471,11 @@ export class GameEngine {
       if (resource.isCollected) return;
       
       Object.values(this.state.players).forEach(player => {
-        // Check if any unit is near the resource
+        // Check if any SOLDIER unit is near the resource (only soldiers can collect)
         const nearbyUnit = player.units.find(unit => {
           if (unit.isDead) return false;
+          // Only soldiers can collect resources
+          if (unit.type !== UnitType.SOLDIER) return false;
           
           const dx = unit.position.x - resource.position.x;
           const dy = unit.position.y - resource.position.y;

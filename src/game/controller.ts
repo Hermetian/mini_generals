@@ -85,6 +85,9 @@ export class GameController {
     this.canvas.addEventListener('mousedown', (event) => {
       if (!this.gameRunning) return;
       
+      // Prevent default browser scrolling behavior
+      event.preventDefault();
+      
       const rect = this.canvas.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
@@ -101,6 +104,9 @@ export class GameController {
     // Mouse move event for selection box
     this.canvas.addEventListener('mousemove', (event) => {
       if (!this.gameRunning || !this.isMouseDown || !this.selectionStart) return;
+      
+      // Prevent default browser scrolling behavior
+      event.preventDefault();
       
       const rect = this.canvas.getBoundingClientRect();
       const x = event.clientX - rect.left;
