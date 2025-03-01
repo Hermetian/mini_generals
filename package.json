@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "A 2D Command & Conquer Generals-inspired .io game",
   "scripts": {
-    "build": "tsc",
+    "build": "vite build",
     "dev": "vite",
     "start": "vite"
   },
