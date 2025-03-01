@@ -37,6 +37,8 @@ const UNIT_STATS: Record<UnitType, Omit<Unit, 'id' | 'position' | 'playerId' | '
     defense: 5,
     range: 3,
     speed: 2,
+    canAttackAir: true,
+    canAttackGround: true,
   },
   [UnitType.TANK]: {
     type: UnitType.TANK,
@@ -46,6 +48,8 @@ const UNIT_STATS: Record<UnitType, Omit<Unit, 'id' | 'position' | 'playerId' | '
     defense: 20,
     range: 5,
     speed: 1.5,
+    canAttackAir: false,
+    canAttackGround: true,
   },
   [UnitType.HELICOPTER]: {
     type: UnitType.HELICOPTER,
@@ -55,6 +59,8 @@ const UNIT_STATS: Record<UnitType, Omit<Unit, 'id' | 'position' | 'playerId' | '
     defense: 10,
     range: 7,
     speed: 3,
+    canAttackAir: true,
+    canAttackGround: true,
   },
 };
 
@@ -277,6 +283,11 @@ export class GameEngine {
       return false;
     }
     
+    // Check if this unit can attack the target type
+    if (!this.canUnitAttackTarget(attacker, target)) {
+      return false;
+    }
+    
     attacker.targetId = targetId;
     attacker.isAttacking = true;
     
@@ -301,14 +312,19 @@ export class GameEngine {
     Object.values(this.state.units).forEach(unit => {
       if (unit.isDead) return;
       
+      // First check if the unit should auto-acquire a target
+      this.checkForAutoTarget(unit);
+      
       // Handle movement
       if (unit.isMoving && unit.path && unit.path.length > 0) {
         const targetPos = unit.path[0];
+        
+        // Calculate direction and distance
         const dx = targetPos.x - unit.position.x;
         const dy = targetPos.y - unit.position.y;
         const distance = Math.sqrt(dx * dx + dy * dy);
         
-        if (distance < 5) {
+        if (distance < 1) {
           // Reached destination
           unit.path.shift();
           if (unit.path.length === 0) {
@@ -316,7 +332,7 @@ export class GameEngine {
           }
         } else {
           // Move towards destination
-          const moveDistance = unit.speed * deltaTime * 60; // Scale by time and target 60 FPS
+          const moveDistance = unit.speed * deltaTime * 60;
           const ratio = Math.min(moveDistance / distance, 1);
           
           unit.position.x += dx * ratio;
@@ -329,6 +345,14 @@ export class GameEngine {
         const target = this.state.units[unit.targetId];
         
         if (!target || target.isDead) {
+          unit.isAttacking = false;
+          unit.targetId = undefined;
+          return;
+        }
+        
+        // Check if this unit can attack the target type
+        const canAttack = this.canUnitAttackTarget(unit, target);
+        if (!canAttack) {
           unit.isAttacking = false;
           unit.targetId = undefined;
           return;
@@ -367,6 +391,61 @@ export class GameEngine {
         }
       }
     });
+  }
+
+  // Check if a unit should automatically acquire a target
+  private checkForAutoTarget(unit: Unit): void {
+    // Only look for targets if not already attacking or moving
+    if (unit.isAttacking || (unit.isMoving && !unit.isAttacking)) {
+      return;
+    }
+    
+    let nearestEnemy: Unit | null = null;
+    let nearestDistance: number = Infinity;
+    
+    // Find the nearest enemy within detection range
+    Object.values(this.state.units).forEach(otherUnit => {
+      if (
+        otherUnit.isDead || 
+        otherUnit.playerId === unit.playerId
+      ) {
+        return;
+      }
+      
+      // Check if this unit can attack the other unit
+      if (!this.canUnitAttackTarget(unit, otherUnit)) {
+        return;
+      }
+      
+      const dx = otherUnit.position.x - unit.position.x;
+      const dy = otherUnit.position.y - unit.position.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      
+      // Auto-detect range is slightly larger than attack range
+      const detectionRange = unit.range * 25;
+      
+      if (distance <= detectionRange && distance < nearestDistance) {
+        nearestEnemy = otherUnit;
+        nearestDistance = distance;
+      }
+    });
+    
+    // If found an enemy in range, attack it
+    if (nearestEnemy) {
+      this.attackUnit(unit.id, nearestEnemy.id);
+    }
+  }
+  
+  // Check if a unit can attack a target based on unit type
+  private canUnitAttackTarget(attacker: Unit, target: Unit): boolean {
+    // Determine if target is air or ground
+    const isTargetAir = target.type === UnitType.HELICOPTER;
+    
+    if (isTargetAir) {
+      return attacker.canAttackAir;
+    } else {
+      return attacker.canAttackGround;
+    }
   }
 
   // Update resources (respawn collected resources)

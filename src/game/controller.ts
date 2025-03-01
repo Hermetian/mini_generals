@@ -262,10 +262,36 @@ export class GameController {
           this.engine.attackUnit(selectedUnit.id, unit.id);
         });
       }
+    } else if (this.selectedUnits.length > 0) {
+      // Clicked on empty space with units selected - MOVE command
+      this.moveSelectedUnitsTo(position);
     } else if (!addToSelection) {
       // Clicked on empty space, clear selection
       this.selectedUnits = [];
     }
+  }
+
+  // Move selected units to target position
+  private moveSelectedUnitsTo(targetPos: Position): void {
+    // Arrange units in a rough formation
+    const unitCount = this.selectedUnits.length;
+    const formationSize = Math.ceil(Math.sqrt(unitCount));
+    const spacing = 30; // Space between units
+    
+    this.selectedUnits.forEach((unit, index) => {
+      const row = Math.floor(index / formationSize);
+      const col = index % formationSize;
+      
+      const offsetX = (col - formationSize / 2) * spacing;
+      const offsetY = (row - formationSize / 2) * spacing;
+      
+      const unitTargetPos = {
+        x: targetPos.x + offsetX,
+        y: targetPos.y + offsetY,
+      };
+      
+      this.engine.moveUnit(unit.id, unitTargetPos);
+    });
   }
 
   // Select units within a box
@@ -325,25 +351,7 @@ export class GameController {
       });
     } else {
       // Move to the target position
-      // Arrange units in a rough formation
-      const unitCount = this.selectedUnits.length;
-      const formationSize = Math.ceil(Math.sqrt(unitCount));
-      const spacing = 30; // Space between units
-      
-      this.selectedUnits.forEach((unit, index) => {
-        const row = Math.floor(index / formationSize);
-        const col = index % formationSize;
-        
-        const offsetX = (col - formationSize / 2) * spacing;
-        const offsetY = (row - formationSize / 2) * spacing;
-        
-        const unitTargetPos = {
-          x: targetPos.x + offsetX,
-          y: targetPos.y + offsetY,
-        };
-        
-        this.engine.moveUnit(unit.id, unitTargetPos);
-      });
+      this.moveSelectedUnitsTo(targetPos);
     }
   }
 

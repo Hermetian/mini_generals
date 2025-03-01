@@ -176,6 +176,9 @@ export class GameRenderer {
 
   // Draw all units
   private drawUnits(state: GameState): void {
+    // First draw attack lines
+    this.drawAttackLines(state);
+    
     Object.values(state.units).forEach(unit => {
       if (unit.isDead) return; // Don't draw dead units
       
@@ -286,6 +289,43 @@ export class GameRenderer {
           0,
           Math.PI * 2
         );
+        this.ctx.fill();
+      }
+    });
+  }
+
+  // Draw attack lines between units and their targets
+  private drawAttackLines(state: GameState): void {
+    Object.values(state.units).forEach(unit => {
+      if (unit.isDead || !unit.isAttacking || !unit.targetId) return;
+      
+      const target = state.units[unit.targetId];
+      if (!target || target.isDead) return;
+      
+      // Draw attack line
+      this.ctx.beginPath();
+      this.ctx.moveTo(unit.position.x, unit.position.y);
+      this.ctx.lineTo(target.position.x, target.position.y);
+      
+      // Set line style based on unit type
+      if (unit.type === UnitType.SOLDIER) {
+        this.ctx.strokeStyle = 'rgba(255, 255, 0, 0.5)'; // Yellow for soldiers
+        this.ctx.lineWidth = 1;
+      } else if (unit.type === UnitType.TANK) {
+        this.ctx.strokeStyle = 'rgba(255, 0, 0, 0.5)'; // Red for tanks
+        this.ctx.lineWidth = 2;
+      } else if (unit.type === UnitType.HELICOPTER) {
+        this.ctx.strokeStyle = 'rgba(0, 255, 255, 0.5)'; // Cyan for helicopters
+        this.ctx.lineWidth = 1.5;
+      }
+      
+      this.ctx.stroke();
+      
+      // Draw an impact effect at the target for visual feedback
+      if (Math.random() < 0.2) { // Only show the effect occasionally for better visuals
+        this.ctx.beginPath();
+        this.ctx.arc(target.position.x, target.position.y, 5, 0, Math.PI * 2);
+        this.ctx.fillStyle = 'rgba(255, 100, 0, 0.7)';
         this.ctx.fill();
       }
     });

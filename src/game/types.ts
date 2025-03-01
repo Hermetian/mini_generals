@@ -49,6 +49,8 @@ export interface Unit {
   isDead: boolean;
   isMoving: boolean;
   isAttacking: boolean;
+  canAttackAir: boolean;
+  canAttackGround: boolean;
 }
 
 export interface Resource {
